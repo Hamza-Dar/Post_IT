@@ -171,7 +171,7 @@ public class Main_Post extends AppCompatActivity
             startActivity( obj);
         } else if (id == R.id.invite) {
             onInviteClicked();
-        } else if (id == R.id.liked_posts) {
+        } else if (id == R.id.SavedPosts) {
 
         } else if (id == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
