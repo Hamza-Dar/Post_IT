@@ -65,10 +65,18 @@ public class UserProfilePage extends AppCompatActivity
 
         TextView nameV = findViewById(R.id.Username_n_profile);
         nameV.setText(name);
-
+        Button edt = findViewById(R.id.EditProfile);
         if(!uid.equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
-            Button edt = findViewById(R.id.EditProfile);
             edt.setVisibility(View.GONE);
+
+        }
+        else{
+            edt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity( new Intent(getApplicationContext(), Fingerprint.class));
+                }
+            });
         }
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -78,9 +86,6 @@ public class UserProfilePage extends AppCompatActivity
                 startActivity(i);
             }
         });
-
-
-
     }
 
     public void userSettings(View v){

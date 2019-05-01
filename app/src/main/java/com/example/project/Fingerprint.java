@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.hardware.fingerprint.FingerprintManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,7 +49,8 @@ public class Fingerprint extends AppCompatActivity implements FingerPrintAuthCal
     }
     @Override
     public void onAuthSuccess(FingerprintManager.CryptoObject cryptoObject) {
-        Toast.makeText(getApplicationContext(), "Succeeded", Toast.LENGTH_SHORT).show();
+        finish();
+        startActivity( new Intent(this, EditUserProfile.class));
     }
     @Override
     public void onAuthFailed(int errorCode, String errorMessage) {

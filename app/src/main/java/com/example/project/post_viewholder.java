@@ -29,9 +29,11 @@ public class post_viewholder extends RecyclerView.ViewHolder {
     View v;
     String postkey;
     FirebaseAuth mAuth;
+    Button save;
     public post_viewholder(@NonNull View itemView) {
         super(itemView);
         mAuth = FirebaseAuth.getInstance();
+        save = itemView.findViewById(R.id.SavePost);
         Name = itemView.findViewById(R.id.usrname);
         desc = itemView.findViewById(R.id.desc);
         n_comnt = itemView.findViewById(R.id.n_cmnt);
@@ -161,8 +163,8 @@ public class post_viewholder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 Intent obj = new Intent(c, UserProfilePage.class);
 
-                obj.putExtra("UID", p.UID);
-                obj.putExtra("name", p.UserName);
+                obj.putExtra("UID", p.getUID());
+                obj.putExtra("name", p.getUserName());
                 obj.putExtra("url", p.getDp());
 
                 c.startActivity( obj);
@@ -210,6 +212,14 @@ public class post_viewholder extends RecyclerView.ViewHolder {
                     obj.putExtra("post_key", postkey);
                     c.startActivity(obj);
                 }
+            }
+        });
+
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                post_save ps =  new post_save(post_key, p.getUserName(), p.getDesc(), p.getUID(), p.getImage_uri(), p.getDp());
+                new save_post_async(ps, c).execute();
             }
         });
     }
