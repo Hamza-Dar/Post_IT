@@ -2,7 +2,7 @@ package com.example.project;
 
 
 public class post {
-    String UID, Desc, image_uri, UserName, dp;
+    private String UID, Desc, image_uri, UserName, dp;
 
 
     public post() {

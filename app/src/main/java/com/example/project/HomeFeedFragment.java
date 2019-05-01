@@ -111,11 +111,11 @@ public class HomeFeedFragment extends Fragment implements RecyclerView.OnItemTou
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             if (like) {
                                 if (dataSnapshot.child(getRef(position).getKey()).hasChild(mAuth.getCurrentUser().getUid())) {
-                                    UserRef.child(model.UID).child("likers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"|"+getRef(position).getKey()).removeValue();
+                                    UserRef.child(model.getUID()).child("likers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"|"+getRef(position).getKey()).removeValue();
                                     likeref.child(getRef(position).getKey()).child(mAuth.getCurrentUser().getUid()).removeValue();
                                     like=false;
                                 } else {
-                                    UserRef.child(model.UID).child("likers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"|"+getRef(position).getKey()).setValue("liked");
+                                    UserRef.child(model.getUID()).child("likers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"|"+getRef(position).getKey()).setValue("liked");
                                     likeref.child(getRef(position).getKey()).child(mAuth.getCurrentUser().getUid()).setValue("Random");
                                     like=false;
                                 }
