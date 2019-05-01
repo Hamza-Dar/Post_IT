@@ -83,6 +83,11 @@ public class UserProfilePage extends AppCompatActivity
 
     }
 
+    public void userSettings(View v){
+        Intent i= new Intent(getApplicationContext(), EditUserProfile.class);
+        startActivity(i);
+    }
+
 
 
 

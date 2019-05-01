@@ -12,9 +12,9 @@
             android:icon="@drawable/icons8user50"
             android:title="Profile" />
         <item
-            android:id="@+id/liked_posts"
+            android:id="@+id/SavedPosts"
             android:icon="@drawable/ic_heart_border"
-            android:title="Liked Posts" />
+            android:title="Saved Posts" />
         <item
             android:id="@+id/invite"
             android:icon="@drawable/icons8university64"
@@ -28,7 +28,7 @@
             android:title="Logout" />
         <item
             android:id="@+id/settings"
-            android:icon="@drawable/settings_work_tool"
+            android:icon="@drawable/settings"
             android:title="Settings" />
         <item
             android:id="@+id/help"

@@ -171,7 +171,7 @@ public class Main_Post extends AppCompatActivity
             startActivity( obj);
         } else if (id == R.id.invite) {
             onInviteClicked();
-        } else if (id == R.id.liked_posts) {
+        } else if (id == R.id.SavedPosts) {
 
         } else if (id == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
@@ -179,6 +179,8 @@ public class Main_Post extends AppCompatActivity
             startActivity( new Intent(this, MainActivity.class));
 
         } else if (id == R.id.settings) {
+            Intent i= new Intent(getApplicationContext(), EditUserProfile.class);
+            startActivity(i);
 
         }
         else if (id == R.id.help){
