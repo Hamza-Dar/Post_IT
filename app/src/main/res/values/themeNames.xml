@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="themes_names">
+        <item>Dark</item>
+        <item>Darker</item>
+        <item>Console</item>
+    </string-array>
+</resources>

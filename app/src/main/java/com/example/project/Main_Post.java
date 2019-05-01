@@ -179,6 +179,8 @@ public class Main_Post extends AppCompatActivity
             startActivity( new Intent(this, MainActivity.class));
 
         } else if (id == R.id.settings) {
+            Intent i= new Intent(getApplicationContext(), EditUserProfile.class);
+            startActivity(i);
 
         }
         else if (id == R.id.help){
