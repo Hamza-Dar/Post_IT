@@ -1,23 +1,32 @@
 package com.example.project;
+
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.speech.RecognizerIntent;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -27,16 +36,19 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class make_post extends Activity {
+public class make_post extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback{
 
+    private FusedLocationProviderClient fusedLocationClient;
     Bitmap imageBitmap;
     private AdView mAdView;
     private StorageReference mStorageRef;
@@ -44,10 +56,27 @@ public class make_post extends Activity {
     Spinner dropdown;
     ArrayAdapter<String> adapter;
     ArrayList<String> arr;
+    FirebaseRemoteConfig mFirebaseRemoteConfig;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_make_post);
+        mFirebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
+
+        mFirebaseRemoteConfig.fetch(600)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+//                            Toast.makeText(getApplicationContext(), "Fetch Succeeded",
+//                                    Toast.LENGTH_SHORT).show();
+
+                        // After config data is successfully fetched, it must be activated before newly fetched
+                        // values are returned.
+                        mFirebaseRemoteConfig.activateFetched();
+                    } else {
+//                            Toast.makeText(getApplicationContext(), "Fetch Failed",
+//                                    Toast.LENGTH_SHORT).show();
+                    }
+                });
         dropdown = findViewById(R.id.spinner);
         arr = new ArrayList<>();
         arr.add("feed");
@@ -55,36 +84,37 @@ public class make_post extends Activity {
         adapter = new ArrayAdapter<>(this, R.layout.spinner_row, arr);
 //
         DatabaseReference dref = FirebaseDatabase.getInstance().getReference().child("CurrentEvents");
-       dref.addValueEventListener(new ValueEventListener() {
-           @Override
-           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-               for (DataSnapshot sampleSnapshot: dataSnapshot.getChildren()){
-                   String event = (String)sampleSnapshot.getValue();
-                   adapter.add(event);
-               }
-           }
+        dref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot sampleSnapshot : dataSnapshot.getChildren()) {
+                    String event = (String) sampleSnapshot.getValue();
+                    adapter.add(event);
+                }
+            }
 
-           @Override
-           public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-           }
-       });
+            }
+        });
 
-/*
+
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);*/
+        mAdView.loadAd(adRequest);
         dropdown.setAdapter(adapter);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         db = FirebaseDatabase.getInstance();
+
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
     }
 
 
-
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults)
-    {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case 1:
                 // If request is cancelled, the result arrays are empty.
@@ -95,10 +125,70 @@ public class make_post extends Activity {
                     //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
                 }
                 break;
+            case 32:
+
+                break;
         }
     }
 
-    public void add_image(View v){
+
+
+
+
+    public void add_image(View v) {
+
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    32);
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location. In some rare situations this can be null.
+                        if (location != null) {
+                            // Logic to handle location object\
+                            Double longitude = location.getLongitude();
+                            Double latitude = location.getLatitude();
+                            String longit = Double.toString(longitude);
+                            String lat = Double.toString(latitude);
+                            Toast.makeText(getApplicationContext(), longit + "  " + lat, Toast.LENGTH_LONG).show();
+                            if (latitude > 31.479740 && latitude < 31.482621 && longitude > 74.302347 && longitude < 74.304763) {
+                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivityForResult(takePictureIntent, 1);
+                                }
+
+                            }
+                            else if(mFirebaseRemoteConfig.getString("allow_post").equals("true")) {
+                                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                    startActivityForResult(takePictureIntent, 1);
+                                }
+
+                            }
+                        }
+                        else if(mFirebaseRemoteConfig.getString("allow_post").equals("true")) {
+                            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                                startActivityForResult(takePictureIntent, 1);
+                            }
+
+                        }
+                    }
+                });
+
+
 
 //        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
@@ -107,10 +197,10 @@ public class make_post extends Activity {
 //            startActivityForResult(galleryIntent, 1);
 //        }
 
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(takePictureIntent, 1);
-        }
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+//            startActivityForResult(takePictureIntent, 1);
+//        }
 
     }
 

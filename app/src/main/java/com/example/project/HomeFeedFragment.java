@@ -62,8 +62,7 @@ public class HomeFeedFragment extends Fragment implements RecyclerView.OnItemTou
     boolean like = false;
 
 
-    //private ArrayList<post_details> items= new ArrayList<>();
-    Post_adapter adapter;
+
     Context con= getActivity();
 
     @Nullable

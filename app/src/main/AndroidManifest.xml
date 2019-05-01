@@ -18,9 +18,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Fingerprint"></activity>
+        <activity android:name=".Saved_posts"></activity>
+        <activity android:name=".Fingerprint" />
         <activity android:name=".EVENT" />
-        <activity android:name=".UserProfile" />
 
         <service android:name=".MessageService">
             <intent-filter>

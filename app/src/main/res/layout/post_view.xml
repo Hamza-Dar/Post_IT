@@ -81,7 +81,6 @@
 
 
             <ToggleButton
-                android:id="@+id/button_comment"
                 android:layout_width="26dp"
                 android:layout_height="26dp"
                 android:layout_marginStart="8dp"
