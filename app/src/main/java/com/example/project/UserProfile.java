@@ -26,8 +26,8 @@ public class UserProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user_profile);
-        RecyclerView rv = findViewById(R.id.user_posts);
+        setContentView(R.layout.activity_user_profile_page);
+        RecyclerView rv = findViewById(R.id.rv_new_userprofile);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setItemAnimator(new DefaultItemAnimator());
         uid = getIntent().getStringExtra("UID");
@@ -51,7 +51,7 @@ public class UserProfile extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String path = (String) dataSnapshot.getValue();
-                ImageView dp = findViewById(R.id.user_profile_img);
+                ImageView dp = findViewById(R.id.UserImg);
                 Picasso.get().load(path).into(dp);
             }
 
@@ -62,7 +62,7 @@ public class UserProfile extends AppCompatActivity {
         }) ;
 
 
-        TextView nameV = findViewById(R.id.user_profile_name);
+        TextView nameV = findViewById(R.id.Username_n_profile);
         nameV.setText(name);
     }
 
