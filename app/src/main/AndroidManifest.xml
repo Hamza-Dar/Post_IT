@@ -18,7 +18,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EVENT"></activity>
+        <activity android:name=".Fingerprint"></activity>
+        <activity android:name=".EVENT" />
         <activity android:name=".UserProfile" />
 
         <service android:name=".MessageService">
@@ -40,6 +41,9 @@
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
 
+        <activity
+            android:name=".UserProfilePage"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Event_Manager"
             android:label="@string/title_activity_event__manager"

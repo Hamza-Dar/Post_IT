@@ -2,18 +2,27 @@ package com.example.project;
 
 public class Event_info {
     double latitude, longitude;
-    String event_name, Event_desc, image_url, UID;
+    String event_name, Event_desc, image_url, UID, address;
 
     public Event_info(){
     }
 
-    public Event_info(double latitude, double longitude, String event_name, String event_desc, String image_url, String UID) {
+    public Event_info(double latitude, double longitude, String event_name, String event_desc, String image_url, String UID, String address) {
         this.latitude = latitude;
         this.longitude = longitude;
         this.event_name = event_name;
         Event_desc = event_desc;
         this.image_url = image_url;
         this.UID = UID;
+        this.address = address;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getUID() {

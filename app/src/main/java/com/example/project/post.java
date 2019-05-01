@@ -1,16 +1,25 @@
 package com.example.project;
 
 public class post {
-    String UID, Desc, image_uri, UserName;
+    String UID, Desc, image_uri, UserName, dp;
 
     public post() {
     }
 
-    public post(String UID, String desc, String image_uri, String userName) {
+    public post(String UID, String desc, String image_uri, String userName, String dp) {
         this.UID = UID;
         Desc = desc;
         this.image_uri = image_uri;
         UserName = userName;
+        this.dp = dp;
+    }
+
+    public String getDp() {
+        return dp;
+    }
+
+    public void setDp(String dp) {
+        this.dp = dp;
     }
 
     public String getUID() {

@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -18,6 +20,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -48,6 +52,9 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.io.IOException;
+import java.util.List;
+
 public class Create_event extends AppCompatActivity implements OnMapReadyCallback {
 
     MapView mapView;
@@ -72,6 +79,36 @@ public class Create_event extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+
+    public void new_location(View v){
+        if (mMap != null) {
+            mMap.clear();
+            Geocoder cd =  new Geocoder(getApplicationContext());
+
+            List<Address> adr;
+            TextView path = findViewById(R.id.Event_location);
+            LatLng sydney = new LatLng(latitude, longitude);
+
+            try {
+                adr = cd.getFromLocationName(path.getText().toString(), 2);
+                if(adr!=null && adr.size()>0){
+                    Address a = adr.get(0);
+                    latitude = a.getLatitude();
+                    longitude=a.getLongitude();
+                    sydney = new LatLng(a.getLatitude(), a.getLongitude());
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            mMap.addMarker(new MarkerOptions()
+                    .position(sydney)
+                    .title("Current Position"));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12));
+        }
+
+    }
+
     int PLACE_PICKER_REQUEST = 14;
     public void getlocationevent(View v) throws GooglePlayServicesNotAvailableException, GooglePlayServicesRepairableException {
 
@@ -85,41 +122,31 @@ public class Create_event extends AppCompatActivity implements OnMapReadyCallbac
         mMap = googleMap;
 
         // Add a marker in Sydney, Australia, and move the camera.
+        Geocoder cd =  new Geocoder(this);
+
+        List<Address> adr;
+        TextView path = findViewById(R.id.Event_location);
         LatLng sydney = new LatLng(latitude, longitude);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney")).setDraggable(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
 
-            @Override
-            public void onMarkerDrag(Marker marker) {
-
+        try {
+            adr = cd.getFromLocationName(path.getText().toString(), 2);
+            if(adr!=null){
+                Address a = adr.get(0);
+                latitude = a.getLatitude();
+                longitude=a.getLongitude();
+                sydney = new LatLng(a.getLatitude(), a.getLongitude());
             }
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
-                LatLng newLocation = marker.getPosition();
-                latitude= (newLocation.latitude);
-                longitude= (newLocation.longitude);
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(latitude, longitude), 15.0f));
 
-            }
-            @Override
-            public void onMarkerDragStart(Marker marker) {}
-
-        });
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-        }else {
-            mMap.setMyLocationEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Event")).setDraggable(false);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+
     }
+
+
 
 
 
@@ -185,7 +212,8 @@ public class Create_event extends AppCompatActivity implements OnMapReadyCallbac
                     while(!uri.isComplete());
                     String imageuri = uri.getResult().toString();
                     //post p = new post(UID, Event_desc.getText().toString(), imageuri, Event_name.getText().toString());
-                    Event_info p = new Event_info(latitude, longitude, Event_name.getText().toString(), Event_desc.getText().toString(), imageuri, UID);
+                    TextView path = findViewById(R.id.Event_location);
+                    Event_info p = new Event_info(latitude, longitude, Event_name.getText().toString(), Event_desc.getText().toString(), imageuri, UID, path.getText().toString());
                     DBRef.setValue(p);
                     prog.dismiss();
                     EventRef.child(Event_name.getText().toString()).setValue(Event_name.getText().toString());

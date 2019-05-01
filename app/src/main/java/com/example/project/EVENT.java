@@ -1,6 +1,10 @@
 package com.example.project;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +17,12 @@ import android.widget.TextView;
 
 import com.facebook.share.widget.ShareButton;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,12 +31,20 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
-public class EVENT extends Activity {
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
+public class EVENT extends Activity  implements OnMapReadyCallback {
 
     RecyclerView rv;
-    TextView name, desc;
+    TextView name, desc, adr;
+    Double latitude, longitude;
+    GoogleMap mMap;
     ImageView img;
     FirebaseAuth mAuth;
+    MapView mapView;
+    String address;
     FirebaseRecyclerAdapter<post, post_viewholder> firebaseadapter;
     boolean like = false;
 
@@ -34,12 +52,17 @@ public class EVENT extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+        latitude = 31.4812;
+        longitude =74.3031;
+        address = "FAST NU Lahore";
         rv = findViewById(R.id.rv_event_v);
         name = findViewById(R.id.name_event_v);
         desc = findViewById(R.id.desc_event_v);
         img = findViewById(R.id.img_Event_v);
+        adr = findViewById(R.id.Event_address_v);
         mAuth = FirebaseAuth.getInstance();
-
+        mapView = findViewById(R.id.mapView2);
+        mapView.onCreate(savedInstanceState);
 
         String post_key = getIntent().getStringExtra("event_key");
         DatabaseReference DB = FirebaseDatabase.getInstance().getReferenceFromUrl("https://projectsmd-4aa60.firebaseio.com/Events").child(post_key);
@@ -51,8 +74,37 @@ public class EVENT extends Activity {
                 String UN =(String) dataSnapshot.child("event_name").getValue();
                 String Desc =(String) dataSnapshot.child("event_desc").getValue();
                 String Image =(String) dataSnapshot.child("image_url").getValue();
+                address =(String) dataSnapshot.child("address").getValue();
+                latitude = (double) dataSnapshot.child("latitude").getValue();
+                longitude = (double) dataSnapshot.child("longitude").getValue();
+                if (mMap != null) {
+                    mMap.clear();
+                    Geocoder cd = new Geocoder(getApplicationContext());
+
+                    List<Address> adr;
+                    TextView path = findViewById(R.id.Event_location);
+                    LatLng sydney = new LatLng(latitude, longitude);
+
+                    try {
+                        adr = cd.getFromLocationName(path.getText().toString(), 2);
+                        if (adr != null && adr.size() > 0) {
+                            Address a = adr.get(0);
+                            latitude = a.getLatitude();
+                            longitude = a.getLongitude();
+                            sydney = new LatLng(a.getLatitude(), a.getLongitude());
+                        }
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    mMap.addMarker(new MarkerOptions()
+                            .position(sydney)
+                            .title("Event Location"));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 12));
+                }
                 name.setText(UN);
                 desc.setText(Desc);
+                adr.setText("Location: "+address);
                 if(Image!=null && !Image.equals("no_imag")) {
                     Picasso.get().load(Image).into(img);
                 }
@@ -126,5 +178,39 @@ public class EVENT extends Activity {
         rv.setAdapter(firebaseadapter);
 
 
+    }
+
+    public void mapclick(View v){
+        String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=%s", latitude, longitude, address);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney, Australia, and move the camera.
+        Geocoder cd =  new Geocoder(this);
+
+        List<Address> adr;
+        TextView path = findViewById(R.id.Event_location);
+        LatLng sydney = new LatLng(latitude, longitude);
+
+        try {
+            adr = cd.getFromLocationName(path.getText().toString(), 2);
+            if(adr!=null){
+                Address a = adr.get(0);
+                latitude = a.getLatitude();
+                longitude=a.getLongitude();
+                sydney = new LatLng(a.getLatitude(), a.getLongitude());
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Event")).setDraggable(false);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }
 }

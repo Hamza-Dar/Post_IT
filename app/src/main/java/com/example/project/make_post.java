@@ -70,10 +70,10 @@ public class make_post extends Activity {
            }
        });
 
-
+/*
         mAdView = findViewById(R.id.adView);
         AdRequest adRequest = new AdRequest.Builder().build();
-        mAdView.loadAd(adRequest);
+        mAdView.loadAd(adRequest);*/
         dropdown.setAdapter(adapter);
         mStorageRef = FirebaseStorage.getInstance().getReference();
         db = FirebaseDatabase.getInstance();
@@ -153,7 +153,7 @@ public class make_post extends Activity {
                     Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
                     while(!uri.isComplete());
                     String imageuri = uri.getResult().toString();
-                    post p = new post(UID, desc.getText().toString(), imageuri, username);
+                    post p = new post(UID, desc.getText().toString(), imageuri, username, FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
                     DBRef.setValue(p);
                     prog.dismiss();
                     UserRef.setValue(DBRef.getKey());
@@ -170,7 +170,7 @@ public class make_post extends Activity {
         else
         {
             prog.show();
-            post p = new post(UID, desc.getText().toString(), "no_image", username);
+            post p = new post(UID, desc.getText().toString(), "no_image", username, FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
             DBRef.setValue(p);
             UserRef.setValue(DBRef.getKey());
             prog.dismiss();

@@ -19,9 +19,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class post_viewholder extends RecyclerView.ViewHolder {
     TextView Name, desc, n_likes, n_comnt;
     ImageView img;
+    CircleImageView dp;
     ToggleButton like;
     View v;
     String postkey;
@@ -36,6 +39,7 @@ public class post_viewholder extends RecyclerView.ViewHolder {
         img = itemView.findViewById(R.id.image_row);
         like = itemView.findViewById(R.id.button_like);
         v = itemView;
+        dp = itemView.findViewById(R.id.profile_image);
         postkey = null;
     }
 
@@ -53,10 +57,14 @@ public class post_viewholder extends RecyclerView.ViewHolder {
                 UID = (String) dataSnapshot.child("uid").getValue();
                 String Desc = (String) dataSnapshot.child("desc").getValue();
                 String Image = (String) dataSnapshot.child("image_uri").getValue();
+                String d = (String)  dataSnapshot.child("dp").getValue();
                 Name.setText(UN);
                 desc.setText(Desc);
                 if (Image != null && !Image.equals("no_imag")) {
                     Picasso.get().load(Image).into(img);
+                }
+                if(d!=null){
+                    Picasso.get().load(d).into(dp);
                 }
             }
 
@@ -151,7 +159,7 @@ public class post_viewholder extends RecyclerView.ViewHolder {
         Name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent obj = new Intent(c, UserProfile.class);
+                Intent obj = new Intent(c, UserProfilePage.class);
                 obj.putExtra("UID", p.UID);
                 obj.putExtra("name", p.UserName);
                 c.startActivity( obj);
@@ -161,6 +169,9 @@ public class post_viewholder extends RecyclerView.ViewHolder {
         postkey = post_key;
         if (p.getImage_uri() != null) {
             Picasso.get().load(p.image_uri).into(img);
+        }
+        if(p.getDp()!=null){
+            Picasso.get().load(p.getDp()).into(dp);
         }
         DatabaseReference likeref = FirebaseDatabase.getInstance().getReferenceFromUrl("https://projectsmd-4aa60.firebaseio.com/likes");
         likeref.child(post_key).addValueEventListener(new ValueEventListener() {
