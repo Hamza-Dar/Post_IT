@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 
 import android.graphics.BitmapFactory;
+import android.icu.text.UnicodeSetSpanner;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -128,6 +129,9 @@ public class Add_information extends AppCompatActivity {
                 b.setEnabled(true);
                 b.setClickable(true);
             });
+        }
+        else
+        {
         }
 
 

@@ -1,8 +1,8 @@
 package com.example.project;
 
 public class Event_info {
-    double latitude, longitude;
-    String event_name, Event_desc, image_url, UID, address;
+    private double latitude, longitude;
+    private String event_name, Event_desc, image_url, UID, address;
 
     public Event_info(){
     }

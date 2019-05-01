@@ -167,11 +167,13 @@ public class Main_Post extends AppCompatActivity
             Intent obj = new Intent(this, UserProfilePage.class);
             obj.putExtra("UID", FirebaseAuth.getInstance().getCurrentUser().getUid());
             obj.putExtra("name", FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
-            obj.putExtra("url", FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
+            if(FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl()!= null)
+                obj.putExtra("url", FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString());
             startActivity( obj);
         } else if (id == R.id.invite) {
             onInviteClicked();
-        } else if (id == R.id.liked_posts) {
+        } else if (id == R.id.SavedPosts) {
+            startActivity( new Intent(this, Saved_posts.class));
 
         } else if (id == R.id.logout) {
             FirebaseAuth.getInstance().signOut();
@@ -179,6 +181,8 @@ public class Main_Post extends AppCompatActivity
             startActivity( new Intent(this, MainActivity.class));
 
         } else if (id == R.id.settings) {
+            Intent i= new Intent(getApplicationContext(), EditUserProfile.class);
+            startActivity(i);
 
         }
         else if (id == R.id.help){

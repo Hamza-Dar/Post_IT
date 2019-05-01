@@ -13,13 +13,17 @@
     <application
         android:name=".Project"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/post_it"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/post_it"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".EditUserProfile"></activity>
+
+        <activity android:name=".EditUserProfile"
+        android:theme="@android:style/Theme.Black.NoTitleBar" />
+
         <activity android:name=".Saved_posts"></activity>
+
         <activity android:name=".Fingerprint" />
         <activity android:name=".EVENT" />
 

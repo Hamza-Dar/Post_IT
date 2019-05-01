@@ -7,6 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,12 +38,56 @@ public class Post_adapter extends RecyclerView.Adapter<post_viewholder> {
         return new post_viewholder(v);
     }
 
+    boolean like =false;
     @Override
-    public void onBindViewHolder(@NonNull post_viewholder holder, int position) {
-        if(items != null && holder != null) {
+    public void onBindViewHolder(@NonNull post_viewholder viewHolder, int position) {
+        if(items != null && viewHolder != null) {
             post_save ps = items.get(position);
             post p = new post(ps.getUID(), ps.getDesc(), ps.getImg(), ps.getName(), ps.getDp());
-            holder.set_post(p, ps.getPid(), c);
+            viewHolder.set_post(p, ps.getPid(), c);
+            viewHolder.save.setVisibility(View.GONE);
+            DatabaseReference likeref = FirebaseDatabase.getInstance().getReferenceFromUrl("https://projectsmd-4aa60.firebaseio.com/likes");
+            DatabaseReference UserRef = FirebaseDatabase.getInstance().getReference().child("Users");
+            FirebaseAuth mAuth = FirebaseAuth.getInstance();
+            likeref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.child( ps.getPid()).hasChild(mAuth.getCurrentUser().getUid())) {
+                        viewHolder.like.setChecked(true);
+                    } else {
+                        viewHolder.like.setChecked(false);
+                    }
+                }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            viewHolder.like.setOnClickListener(v -> {
+                like = true;
+                likeref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (like) {
+                            if (dataSnapshot.child(ps.getPid()).hasChild(mAuth.getCurrentUser().getUid())) {
+                                UserRef.child(ps.getUID()).child("likers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"|"+ps.getPid()).removeValue();
+                                likeref.child(ps.getPid()).child(mAuth.getCurrentUser().getUid()).removeValue();
+                                like=false;
+                            } else {
+                                UserRef.child(ps.getUID()).child("likers").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+"|"+ps.getPid()).setValue("liked");
+                                likeref.child(ps.getPid()).child(mAuth.getCurrentUser().getUid()).setValue("Random");
+                                like=false;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            });
         }
     }
 

@@ -112,7 +112,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="@string/action_settings"
+                    android:text="Settings"
                     android:textColor="@color/UserName_color"
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -264,7 +264,7 @@
                     android:layout_marginTop="28dp"
                     android:layout_marginEnd="161dp"
                     android:layout_marginBottom="20dp"
-                    android:background="@drawable/rounded1"
+                    android:background="@drawable/rounded"
                     android:onClick="onSave"
                     android:text="Save"
                     android:textSize="18sp"
@@ -279,4 +279,3 @@
     </ScrollView>
 
 </android.support.constraint.ConstraintLayout>
-
