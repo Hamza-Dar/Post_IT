@@ -22,6 +22,7 @@
         <activity android:name=".EditUserProfile"
         android:theme="@android:style/Theme.Black.NoTitleBar" />
 
+        <activity android:name=".Saved_posts"></activity>
 
         <activity android:name=".Fingerprint" />
         <activity android:name=".EVENT" />

@@ -44,8 +44,7 @@ public class EventFeedFragment extends Fragment implements RecyclerView.OnItemTo
 
 
 
-    //private ArrayList<post_details> items= new ArrayList<>();
-    Post_adapter adapter;
+
     Context con= getActivity();
     @Nullable
     @Override

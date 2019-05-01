@@ -8,7 +8,6 @@
     android:paddingBottom="1dp">
 
     <android.support.v7.widget.CardView
-        android:id="@+id/cardView31"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
