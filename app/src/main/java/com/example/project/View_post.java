@@ -36,6 +36,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class View_post extends Activity {
     TextToSpeech t1;
 
@@ -66,6 +68,7 @@ public class View_post extends Activity {
         TextView Username = findViewById(R.id.view_username);
         TextView desc = findViewById(R.id.view_desc);
         ImageView img = findViewById(R.id.view_image);
+        CircleImageView dp = findViewById(R.id.profile_image);
         DB.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -73,9 +76,13 @@ public class View_post extends Activity {
                 String Desc = (String) dataSnapshot.child("desc").getValue();
                 String Image = (String) dataSnapshot.child("image_uri").getValue();
                 UID = (String) dataSnapshot.child("uid").getValue();
+                String d = (String)  dataSnapshot.child("dp").getValue();
                 set_like_button();
                 Username.setText(UN);
                 desc.setText(Desc);
+                if(d!=null)
+                    Picasso.get().load(d).into(dp);
+
                 if (Image != null && !Image.equals("no_imag")) {
                     Picasso.get().load(Image).into(img, new com.squareup.picasso.Callback() {
                         @Override
