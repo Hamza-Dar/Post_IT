@@ -58,9 +58,6 @@ public class UserPosts extends Fragment implements RecyclerView.OnItemTouchListe
     private SensorManager mSensorMgr;
     boolean like = false;
 
-
-    //private ArrayList<post_details> items= new ArrayList<>();
-    Post_adapter adapter;
     Context con= getActivity();
 
     @Nullable

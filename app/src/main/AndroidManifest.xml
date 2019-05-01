@@ -19,9 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".EditUserProfile"></activity>
+        <activity android:name=".Saved_posts"></activity>
         <activity android:name=".Fingerprint" />
         <activity android:name=".EVENT" />
-        <activity android:name=".UserProfile" />
 
         <service android:name=".MessageService">
             <intent-filter>

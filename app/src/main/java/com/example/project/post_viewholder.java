@@ -160,8 +160,11 @@ public class post_viewholder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 Intent obj = new Intent(c, UserProfilePage.class);
-                obj.putExtra("UID", p.getUID());
-                obj.putExtra("name", p.getUserName());
+
+                obj.putExtra("UID", p.UID);
+                obj.putExtra("name", p.UserName);
+                obj.putExtra("url", p.getDp());
+
                 c.startActivity( obj);
             }
         });
