@@ -111,28 +111,22 @@ public class Add_information extends AppCompatActivity {
             return;
         if(selectedImage!=null) {
             mStorageRef = FirebaseStorage.getInstance().getReference("profilePics/" + user.getUid() + ".jpg");
-            mStorageRef.putFile(selectedImage).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
-                    while(!uri.isComplete());
-                    String imageuri = uri.getResult().toString();
-                    UserProfileChangeRequest user_update =new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString()).setPhotoUri(Uri.parse(imageuri)).build();
-                    user.updateProfile(user_update);
-                    Toast.makeText(context, "image saved", Toast.LENGTH_LONG).show();
-                    Intent obj = new Intent(getApplicationContext(), done_creating_account.class);
-                    finish();
-                    mAuth.getCurrentUser().sendEmailVerification();
-                    startActivity(obj);
+            mStorageRef.putFile(selectedImage).addOnSuccessListener(taskSnapshot -> {
+                Task<Uri> uri = taskSnapshot.getStorage().getDownloadUrl();
+                while(!uri.isComplete());
+                String imageuri = uri.getResult().toString();
+                UserProfileChangeRequest user_update =new UserProfileChangeRequest.Builder().setDisplayName(name.getText().toString()).setPhotoUri(Uri.parse(imageuri)).build();
+                user.updateProfile(user_update);
+                Toast.makeText(context, "image saved", Toast.LENGTH_LONG).show();
+                Intent obj = new Intent(getApplicationContext(), done_creating_account.class);
+                finish();
+                mAuth.getCurrentUser().sendEmailVerification();
+                startActivity(obj);
 
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(context, "image saved "+e.toString(), Toast.LENGTH_LONG).show();
-                    b.setEnabled(true);
-                    b.setClickable(true);
-                }
+            }).addOnFailureListener(e -> {
+                Toast.makeText(context, "image saved "+e.toString(), Toast.LENGTH_LONG).show();
+                b.setEnabled(true);
+                b.setClickable(true);
             });
         }
 
